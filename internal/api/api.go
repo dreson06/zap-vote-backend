@@ -7,6 +7,8 @@ import (
 	"zapvote/config"
 	"zapvote/internal/api/middleware/ratelimiter"
 	"zapvote/internal/api/middleware/simplelog"
+	v1 "zapvote/internal/api/v1"
+	"zapvote/internal/services/userstore"
 )
 
 type ConfigParams struct {
@@ -24,7 +26,7 @@ func Init(conf *ConfigParams) *echo.Echo {
 	})
 	e.Use(simplelog.Logger)
 
-	group := e.Group("/v1")
+	group := e.Group("/api")
 	group.Any("/ping", func(c echo.Context) error {
 		return c.String(http.StatusOK, "pong")
 	})
@@ -33,5 +35,8 @@ func Init(conf *ConfigParams) *echo.Echo {
 }
 
 func apiV1(group *echo.Group, conf *ConfigParams) {
+	userService := userstore.NewSqlStore(conf.DB)
+	userController := v1.NewAuthController(userService)
 
+	group.POST("/auth", userController.AuthPOST)
 }
