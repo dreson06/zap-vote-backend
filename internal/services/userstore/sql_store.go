@@ -46,3 +46,12 @@ func (us *SqlStore) GetUserSimple(id string) (*user.Simple, error) {
 	}
 	return u, nil
 }
+
+func (us *SqlStore) GetMe(id string) (*user.MeData, error) {
+	u := &user.MeData{}
+	err := us.db.Get(u, "SELECT id,course_code FROM _user WHERE id=$1", id)
+	if err != nil {
+		return nil, err
+	}
+	return u, nil
+}

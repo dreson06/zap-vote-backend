@@ -5,6 +5,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"net/http"
 	"zapvote/config"
+	"zapvote/internal/api/middleware/auth"
 	"zapvote/internal/api/middleware/ratelimiter"
 	"zapvote/internal/api/middleware/simplelog"
 	v1 "zapvote/internal/api/v1"
@@ -36,7 +37,11 @@ func Init(conf *ConfigParams) *echo.Echo {
 
 func apiV1(group *echo.Group, conf *ConfigParams) {
 	userService := userstore.NewSqlStore(conf.DB)
-	userController := v1.NewAuthController(userService)
+	authController := v1.NewAuthController(userService)
+	userController := v1.NewUserController(userService)
 
-	group.POST("/auth", userController.AuthPOST)
+	group.POST("/auth", authController.AuthPOST)
+
+	//user routes
+	group.GET("/user/me", userController.MeGET, auth.Auth)
 }
