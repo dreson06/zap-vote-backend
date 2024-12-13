@@ -12,7 +12,7 @@ func Auth(next echo.HandlerFunc) echo.HandlerFunc {
 		if t == "" {
 			return response.UnauthorizedError(e)
 		}
-		userId, err := accesstoken.Validate(t)
+		userId, err := accesstoken.ValidateUser(t)
 		if err != nil {
 			return response.UnauthorizedError(e)
 		}

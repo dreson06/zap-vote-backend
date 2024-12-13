@@ -9,6 +9,8 @@ import (
 	"zapvote/internal/api/middleware/ratelimiter"
 	"zapvote/internal/api/middleware/simplelog"
 	v1 "zapvote/internal/api/v1"
+	"zapvote/internal/services/adminstore"
+	"zapvote/internal/services/candidatestore"
 	"zapvote/internal/services/userstore"
 )
 
@@ -37,11 +39,25 @@ func Init(conf *ConfigParams) *echo.Echo {
 
 func apiV1(group *echo.Group, conf *ConfigParams) {
 	userService := userstore.NewSqlStore(conf.DB)
+
 	authController := v1.NewAuthController(userService)
 	userController := v1.NewUserController(userService)
 
-	group.POST("/auth", authController.AuthPOST)
+	adminService := adminstore.NewSQLStore(conf.DB)
+	adminController := v1.NewAdminController(adminService)
+
+	candidateService := candidatestore.NewSQLStore(conf.DB)
+	candidateController := v1.NewCandidateController(candidateService)
 
 	//user routes
+	group.POST("/user/auth", authController.AuthPOST)
 	group.GET("/user/me", userController.MeGET, auth.Auth)
+
+	//admin routes
+	group.POST("/admin/auth", adminController.AuthPOST)
+	group.POST("/candidate/add", candidateController.AddPOST, auth.AdminAuth)
+
+	//general routes
+	group.GET("/candidates/get/specific", candidateController.SpecificGET)
+	group.GET("/candidates/get/general", candidateController.GeneralGET)
 }

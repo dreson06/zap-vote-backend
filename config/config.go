@@ -12,10 +12,11 @@ const (
 var Cfg Config
 
 type Config struct {
-	PostgresURL       string `env:"postgres_url" env-required:"true"`
-	Port              string `env:"port" env-required:"true"`
-	Mode              Mode   `env:"mode" env-required:"true"`
-	AccessTokenSecret string `env:"access_token_secret" env-required:"true"`
+	PostgresURL            string `env:"postgres_url" env-required:"true"`
+	Port                   string `env:"port" env-required:"true"`
+	Mode                   Mode   `env:"mode" env-required:"true"`
+	AccessTokenSecret      string `env:"access_token_secret" env-required:"true"`
+	AdminAccessTokenSecret string `env:"admin_access_token_secret" env-required:"true"`
 }
 
 func (m Mode) IsRelease() bool {

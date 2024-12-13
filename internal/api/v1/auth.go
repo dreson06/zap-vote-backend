@@ -2,7 +2,6 @@ package v1
 
 import (
 	"errors"
-	"fmt"
 	"github.com/labstack/echo/v4"
 	"golang.org/x/crypto/bcrypt"
 	"strings"
@@ -34,7 +33,7 @@ func (ac *AuthController) AuthPOST(e echo.Context) error {
 	if err := e.Bind(body); err != nil {
 		return response.BadRequestError(e, "wrong body")
 	}
-	if body.RegNo == "" || body.Password == "" || body.DeviceID == "" {
+	if body.RegNo == "" || body.Password == "" {
 		return response.BadRequestError(e, "information required")
 	}
 	ID := strings.ReplaceAll(body.RegNo, "/", "")
@@ -49,7 +48,7 @@ func (ac *AuthController) AuthPOST(e echo.Context) error {
 		if err != nil {
 			return response.OtherErrors(e, response.StatusWrongPassword, "wrong password")
 		}
-		token, err := accesstoken.Generate(u.ID)
+		token, err := accesstoken.GenerateForUser(u.ID)
 		if err != nil {
 			return response.ServerError(e, err, "")
 		}
@@ -59,11 +58,15 @@ func (ac *AuthController) AuthPOST(e echo.Context) error {
 		return response.JSON(e, msg)
 	}
 
-	//new user add them to db
+	//new user add them to db no device ID return
 	c := strings.Split(body.RegNo, "/")
 	var courseCode string
 	if len(c) > 1 {
 		courseCode = c[1]
+	}
+
+	if body.DeviceID == "" {
+		return response.BadRequestError(e, "device id required")
 	}
 
 	hashedP, err := bcrypt.GenerateFromPassword([]byte(body.Password), bcrypt.DefaultCost)
@@ -80,10 +83,9 @@ func (ac *AuthController) AuthPOST(e echo.Context) error {
 
 	err = ac.userService.Create(usr)
 	if err != nil {
-		fmt.Print("error here", err)
 		return response.ServerError(e, err, "")
 	}
-	token, err := accesstoken.Generate(ID)
+	token, err := accesstoken.GenerateForUser(ID)
 	if err != nil {
 		return response.ServerError(e, err, "")
 	}

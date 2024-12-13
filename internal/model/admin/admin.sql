@@ -1,0 +1,7 @@
+CREATE TABLE _admin (
+    id VARCHAR(28) PRIMARY KEY,
+    username VARCHAR(30) NOT NULL DEFAULT '',
+    password TEXT NOT NULL DEFAULT '',
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
