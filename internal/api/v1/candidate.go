@@ -44,22 +44,34 @@ func (cc *CandidateController) AddPOST(e echo.Context) error {
 	return response.Success(e)
 }
 
-func (cc *CandidateController) SpecificGET(e echo.Context) error {
-	course := e.QueryParam("course")
-	if course == "" {
-		return response.BadRequestError(e, "can not find course")
+func (cc *CandidateController) GetFromDepartment(e echo.Context) error {
+	department := e.QueryParam("department")
+	if department == "" {
+		return response.BadRequestError(e, "department required")
 	}
-	candidates, err := cc.candidateStore.GetSpecific(course)
+	candidates, err := cc.candidateStore.GetCandidateByDepartment(department)
 	if err != nil {
 		return response.ServerError(e, err, "")
 	}
 	return response.JSON(e, candidates)
 }
 
-func (cc *CandidateController) GeneralGET(e echo.Context) error {
-	candidates, err := cc.candidateStore.GetGeneral()
-	if err != nil {
-		return response.ServerError(e, err, "")
-	}
-	return response.JSON(e, candidates)
-}
+//func (cc *CandidateController) SpecificGET(e echo.Context) error {
+//	course := e.QueryParam("course")
+//	if course == "" {
+//		return response.BadRequestError(e, "can not find course")
+//	}
+//	candidates, err := cc.candidateStore.GetSpecific(course)
+//	if err != nil {
+//		return response.ServerError(e, err, "")
+//	}
+//	return response.JSON(e, candidates)
+//}
+//
+//func (cc *CandidateController) GeneralGET(e echo.Context) error {
+//	candidates, err := cc.candidateStore.GetGeneral()
+//	if err != nil {
+//		return response.ServerError(e, err, "")
+//	}
+//	return response.JSON(e, candidates)
+//}

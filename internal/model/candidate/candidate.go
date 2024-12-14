@@ -13,8 +13,9 @@ const (
 )
 
 const (
-	General  Type = "general"
-	Specific Type = "specific"
+	Presidential Type = "presidential"
+	Specific     Type = "specific"
+	Faculty      Type = "faculty"
 )
 
 type Candidate struct {

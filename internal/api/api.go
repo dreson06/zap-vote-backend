@@ -11,6 +11,7 @@ import (
 	v1 "zapvote/internal/api/v1"
 	"zapvote/internal/services/adminstore"
 	"zapvote/internal/services/candidatestore"
+	"zapvote/internal/services/electionstore"
 	"zapvote/internal/services/userstore"
 )
 
@@ -49,6 +50,9 @@ func apiV1(group *echo.Group, conf *ConfigParams) {
 	candidateService := candidatestore.NewSQLStore(conf.DB)
 	candidateController := v1.NewCandidateController(candidateService)
 
+	electionService := electionstore.NewSQLStore(conf.DB)
+	electionController := v1.NewElectionController(electionService)
+
 	//user routes
 	group.POST("/user/auth", authController.AuthPOST)
 	group.GET("/user/me", userController.MeGET, auth.Auth)
@@ -57,7 +61,11 @@ func apiV1(group *echo.Group, conf *ConfigParams) {
 	group.POST("/admin/auth", adminController.AuthPOST)
 	group.POST("/candidate/add", candidateController.AddPOST, auth.AdminAuth)
 
-	//general routes
-	group.GET("/candidates/get/specific", candidateController.SpecificGET)
-	group.GET("/candidates/get/general", candidateController.GeneralGET)
+	//candidates routes
+	group.GET("/candidate/get", candidateController.GetFromDepartment)
+	//group.GET("/candidates/get/specific", candidateController.SpecificGET)
+	//group.GET("/candidates/get/general", candidateController.GeneralGET)
+
+	group.GET("/election/presidential", electionController.GetPresidential)
+
 }

@@ -39,7 +39,7 @@ func (cs *SQLStore) Create(c *candidate.Candidate) error {
 
 func (cs *SQLStore) GetGeneral() ([]candidate.Candidate, error) {
 	candidates := make([]candidate.Candidate, 0)
-	err := cs.db.Select(&candidates, "SELECT * FROM _candidate WHERE type=$1", candidate.General)
+	err := cs.db.Select(&candidates, "SELECT * FROM _candidate WHERE type=$1", candidate.Presidential)
 	if err != nil {
 		return nil, err
 	}
@@ -49,6 +49,15 @@ func (cs *SQLStore) GetGeneral() ([]candidate.Candidate, error) {
 func (cs *SQLStore) GetSpecific(courseCode string) ([]candidate.Candidate, error) {
 	candidates := make([]candidate.Candidate, 0)
 	err := cs.db.Select(&candidates, "SELECT * FROM _candidate WHERE type=$1 AND course_code=$2", candidate.Specific, courseCode)
+	if err != nil {
+		return nil, err
+	}
+	return candidates, nil
+}
+
+func (cs *SQLStore) GetCandidateByDepartment(department string) ([]candidate.Candidate, error) {
+	candidates := make([]candidate.Candidate, 0)
+	err := cs.db.Select(&candidates, "SELECT * FROM _candidate WHERE department=$1", department)
 	if err != nil {
 		return nil, err
 	}
