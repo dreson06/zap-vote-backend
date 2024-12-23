@@ -53,6 +53,8 @@ func apiV1(group *echo.Group, conf *ConfigParams) {
 	electionService := electionstore.NewSQLStore(conf.DB)
 	electionController := v1.NewElectionController(electionService)
 
+	group.GET("/election/presidential", electionController.GetPresidentialCandidates, auth.Auth)
+
 	//user routes
 	group.POST("/user/auth", authController.AuthPOST)
 	group.GET("/user/me", userController.MeGET, auth.Auth)
@@ -63,9 +65,5 @@ func apiV1(group *echo.Group, conf *ConfigParams) {
 
 	//candidates routes
 	group.GET("/candidate/get", candidateController.GetFromDepartment)
-	//group.GET("/candidates/get/specific", candidateController.SpecificGET)
-	//group.GET("/candidates/get/general", candidateController.GeneralGET)
-
-	group.GET("/election/presidential", electionController.GetPresidential)
 
 }

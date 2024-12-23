@@ -16,8 +16,8 @@ func NewElectionController(electionStore electionstore.Store) *ElectionControlle
 	}
 }
 
-func (ec *ElectionController) GetPresidential(e echo.Context) error {
-	candidates, err := ec.electionStore.GetPresidential()
+func (ec *ElectionController) GetPresidentialCandidates(e echo.Context) error {
+	candidates, err := ec.electionStore.GetPresidentialCandidates()
 	if err != nil {
 		return response.ServerError(e, err, "")
 	}

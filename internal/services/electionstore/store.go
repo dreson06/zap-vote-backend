@@ -1,11 +1,11 @@
 package electionstore
 
-import "zapvote/internal/model/election"
+import (
+	"zapvote/internal/model/election"
+	"zapvote/internal/model/presidential"
+)
 
 type Store interface {
-	CreatePresidentialElection(p *election.PresidentialElection) error
-	CreateFacultyElection(f *election.FacultyElection) error
-	CreateSpecificElection(s *election.SpecialElection) error
-
-	GetPresidential() ([]election.PresidentialCandidates, error)
+	Create(e *election.Election) error
+	GetPresidentialCandidates() ([]presidential.Simple, error)
 }
