@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/jmoiron/sqlx"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"zapvote/internal/model/classrep"
 	"zapvote/internal/model/election"
 	"zapvote/internal/model/faculty"
 	"zapvote/internal/model/presidential"
@@ -51,6 +52,12 @@ func (es SQLStore) GetFacultyCandidates(name string) ([]faculty.Simple, error) {
 	return candidates, nil
 }
 
-func (es SQLStore) GetClassElection(courseCode string) {
-	panic("not implemented")
+func (es SQLStore) GetClassRepCandidates(courseCode string) ([]classrep.Simple, error) {
+	candidates := make([]classrep.Simple, 0)
+	query := `SELECT cr.id,c.name,cr.slogan,cr.votes,c.thumbnail FROM _classrep cr LEFT JOIN _candidate c ON cr.candidate_id = c.id WHERE cr.course_code=$1 ORDER BY cr.votes DESC`
+	err := es.db.Select(&candidates, query, courseCode)
+	if err != nil {
+		return nil, err
+	}
+	return candidates, nil
 }

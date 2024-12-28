@@ -55,6 +55,7 @@ func apiV1(group *echo.Group, conf *ConfigParams) {
 
 	group.GET("/election/presidential", electionController.GetPresidentialCandidates, auth.Auth)
 	group.GET("/election/faculty/:faculty", electionController.GetFacultyCandidates, auth.Auth)
+	group.GET("/election/class/:course", electionController.GetClassRepCandidates, auth.Auth)
 
 	//user routes
 	group.POST("/user/auth", authController.AuthPOST)

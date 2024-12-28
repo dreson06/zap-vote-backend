@@ -35,3 +35,15 @@ func (ec *ElectionController) GetFacultyCandidates(e echo.Context) error {
 	}
 	return response.JSON(e, candidates)
 }
+
+func (ec *ElectionController) GetClassRepCandidates(e echo.Context) error {
+	course := e.Param("course")
+	if course == "" {
+		return response.BadRequestError(e, "course is required")
+	}
+	candidates, err := ec.electionStore.GetClassRepCandidates(course)
+	if err != nil {
+		return response.ServerError(e, err, "")
+	}
+	return response.JSON(e, candidates)
+}
