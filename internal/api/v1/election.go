@@ -23,3 +23,15 @@ func (ec *ElectionController) GetPresidentialCandidates(e echo.Context) error {
 	}
 	return response.JSON(e, candidates)
 }
+
+func (ec *ElectionController) GetFacultyCandidates(e echo.Context) error {
+	faculty := e.Param("faculty")
+	if faculty == "" {
+		return response.BadRequestError(e, "faculty is required")
+	}
+	candidates, err := ec.electionStore.GetFacultyCandidates(faculty)
+	if err != nil {
+		return response.ServerError(e, err, "")
+	}
+	return response.JSON(e, candidates)
+}

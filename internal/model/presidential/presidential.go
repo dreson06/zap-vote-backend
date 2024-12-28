@@ -18,4 +18,5 @@ type Simple struct {
 	ViceName      string `db:"vice_name" json:"vice_name"`
 	Slogan        string `db:"slogan" json:"slogan"`
 	Department    string `db:"department" json:"department"`
+	Votes         int    `db:"votes" json:"votes"`
 }

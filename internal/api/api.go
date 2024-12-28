@@ -54,6 +54,7 @@ func apiV1(group *echo.Group, conf *ConfigParams) {
 	electionController := v1.NewElectionController(electionService)
 
 	group.GET("/election/presidential", electionController.GetPresidentialCandidates, auth.Auth)
+	group.GET("/election/faculty/:faculty", electionController.GetFacultyCandidates, auth.Auth)
 
 	//user routes
 	group.POST("/user/auth", authController.AuthPOST)
@@ -64,6 +65,6 @@ func apiV1(group *echo.Group, conf *ConfigParams) {
 	group.POST("/candidate/add", candidateController.AddPOST, auth.AdminAuth)
 
 	//candidates routes
-	group.GET("/candidate/get", candidateController.GetFromDepartment)
+	group.GET("/candidate/get", candidateController.GetFromDepartment, auth.Auth)
 
 }

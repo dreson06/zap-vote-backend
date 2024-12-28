@@ -5,6 +5,7 @@ import (
 	"github.com/jmoiron/sqlx"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"zapvote/internal/model/election"
+	"zapvote/internal/model/faculty"
 	"zapvote/internal/model/presidential"
 )
 
@@ -32,7 +33,7 @@ func (es SQLStore) Create(e *election.Election) error {
 
 func (es SQLStore) GetPresidentialCandidates() ([]presidential.Simple, error) {
 	candidates := make([]presidential.Simple, 0)
-	query := `SELECT p.id,p.slogan,c.name as president_name,v.name as vice_name,c.department FROM _presidential p JOIN _election e ON e.id = p.election_id JOIN _candidate c ON c.id = p.president_id JOIN _candidate v ON v.id = p.vice_id;`
+	query := `SELECT p.id,p.slogan,p.votes,c.name as president_name,v.name as vice_name,c.department FROM _presidential p JOIN _election e ON e.id = p.election_id JOIN _candidate c ON c.id = p.president_id JOIN _candidate v ON v.id = p.vice_id ORDER BY p.votes DESC;`
 	err := es.db.Select(&candidates, query)
 	if err != nil {
 		return nil, err
@@ -40,8 +41,14 @@ func (es SQLStore) GetPresidentialCandidates() ([]presidential.Simple, error) {
 	return candidates, nil
 }
 
-func (es SQLStore) GetFacultyElection() {
-	panic("not implemented")
+func (es SQLStore) GetFacultyCandidates(name string) ([]faculty.Simple, error) {
+	candidates := make([]faculty.Simple, 0)
+	query := `SELECT f.id,f.slogan,f.votes,c.name,c.course_code,c.thumbnail FROM _faculty f JOIN _candidate c ON f.candidate_id = c.id WHERE f.name = $1`
+	err := es.db.Select(&candidates, query, name)
+	if err != nil {
+		return nil, err
+	}
+	return candidates, nil
 }
 
 func (es SQLStore) GetClassElection(courseCode string) {
