@@ -12,4 +12,7 @@ type Store interface {
 	GetPresidentialCandidates() ([]presidential.Simple, error)
 	GetFacultyCandidates(faculty string) ([]faculty.Simple, error)
 	GetClassRepCandidates(courseCode string) ([]classrep.Simple, error)
+
+	GetFacultyResults() ([]faculty.Results, error)
+	GetClassRepResults(code string) ([]classrep.Results, error)
 }

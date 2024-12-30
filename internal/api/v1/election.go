@@ -16,7 +16,7 @@ func NewElectionController(electionStore electionstore.Store) *ElectionControlle
 	}
 }
 
-func (ec *ElectionController) GetPresidentialCandidates(e echo.Context) error {
+func (ec *ElectionController) PresidentialCandidatesGET(e echo.Context) error {
 	candidates, err := ec.electionStore.GetPresidentialCandidates()
 	if err != nil {
 		return response.ServerError(e, err, "")
@@ -24,7 +24,7 @@ func (ec *ElectionController) GetPresidentialCandidates(e echo.Context) error {
 	return response.JSON(e, candidates)
 }
 
-func (ec *ElectionController) GetFacultyCandidates(e echo.Context) error {
+func (ec *ElectionController) FacultyCandidatesGET(e echo.Context) error {
 	faculty := e.Param("faculty")
 	if faculty == "" {
 		return response.BadRequestError(e, "faculty is required")
@@ -36,12 +36,29 @@ func (ec *ElectionController) GetFacultyCandidates(e echo.Context) error {
 	return response.JSON(e, candidates)
 }
 
-func (ec *ElectionController) GetClassRepCandidates(e echo.Context) error {
+func (ec *ElectionController) ClassRepCandidatesGET(e echo.Context) error {
 	course := e.Param("course")
 	if course == "" {
 		return response.BadRequestError(e, "course is required")
 	}
 	candidates, err := ec.electionStore.GetClassRepCandidates(course)
+	if err != nil {
+		return response.ServerError(e, err, "")
+	}
+	return response.JSON(e, candidates)
+}
+
+func (ec *ElectionController) FacultyResultsGET(e echo.Context) error {
+	candidates, err := ec.electionStore.GetFacultyResults()
+	if err != nil {
+		return response.ServerError(e, err, "")
+	}
+	return response.JSON(e, candidates)
+}
+
+func (ec *ElectionController) ClassRepResultsGET(e echo.Context) error {
+	code := e.Param("code")
+	candidates, err := ec.electionStore.GetClassRepResults(code)
 	if err != nil {
 		return response.ServerError(e, err, "")
 	}

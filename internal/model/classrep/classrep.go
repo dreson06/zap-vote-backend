@@ -17,3 +17,9 @@ type Simple struct {
 	Thumbnail string `db:"thumbnail" json:"thumbnail"`
 	Votes     int64  `db:"votes" json:"votes"`
 }
+
+type Results struct {
+	ID    string `db:"id" json:"id"`
+	Name  string `db:"name" json:"name"`
+	Votes int64  `db:"votes" json:"votes"`
+}

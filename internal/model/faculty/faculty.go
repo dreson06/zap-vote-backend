@@ -19,3 +19,10 @@ type Simple struct {
 	Votes      int64  `db:"votes" json:"votes"`
 	CourseCode string `db:"course_code" json:"course_code"`
 }
+
+type Results struct {
+	ID            string `db:"id" json:"id"`
+	FacultyName   string `db:"faculty_name" json:"faculty_name"`
+	CandidateName string `db:"candidate_name" json:"candidate_name"`
+	Votes         int64  `db:"votes" json:"votes"`
+}
