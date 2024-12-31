@@ -59,14 +59,15 @@ func (ac *AuthController) AuthPOST(e echo.Context) error {
 	}
 
 	//new user add them to db no device ID return
+
+	if body.DeviceID == "" {
+		return response.BadRequestError(e, "device id required")
+	}
+
 	c := strings.Split(body.RegNo, "/")
 	var courseCode string
 	if len(c) > 1 {
 		courseCode = c[1]
-	}
-
-	if body.DeviceID == "" {
-		return response.BadRequestError(e, "device id required")
 	}
 
 	hashedP, err := bcrypt.GenerateFromPassword([]byte(body.Password), bcrypt.DefaultCost)
