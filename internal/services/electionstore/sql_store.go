@@ -64,7 +64,7 @@ func (es SQLStore) GetClassRepCandidates(courseCode string) ([]classrep.Simple, 
 
 func (es SQLStore) GetFacultyResults() ([]faculty.Results, error) {
 	var candidates []faculty.Results
-	query := `SELECT f.id, f.name as faculty_name,f.votes,c.name as candidate_name FROM _faculty f JOIN _candidate c ON f.candidate_id = c.id ORDER BY f.votes DESC`
+	query := `SELECT f.id,f.candidate_id, f.name as faculty_name,f.votes,c.name as candidate_name FROM _faculty f JOIN _candidate c ON f.candidate_id = c.id ORDER BY f.votes DESC`
 	err := es.db.Select(&candidates, query)
 	if err != nil {
 		return nil, err
@@ -74,7 +74,7 @@ func (es SQLStore) GetFacultyResults() ([]faculty.Results, error) {
 
 func (es SQLStore) GetClassRepResults(code string) ([]classrep.Results, error) {
 	var candidates []classrep.Results
-	query := `SELECT cr.id,cr.votes,c.name FROM _classrep cr JOIN _candidate c ON c.id = cr.candidate_id WHERE cr.course_code=$1 ORDER BY cr.votes DESC`
+	query := `SELECT cr.id,cr.candidate_id,cr.votes,c.name FROM _classrep cr JOIN _candidate c ON c.id = cr.candidate_id WHERE cr.course_code=$1 ORDER BY cr.votes DESC`
 	err := es.db.Select(&candidates, query, code)
 	if err != nil {
 		return nil, err

@@ -19,7 +19,8 @@ type Simple struct {
 }
 
 type Results struct {
-	ID    string `db:"id" json:"id"`
-	Name  string `db:"name" json:"name"`
-	Votes int64  `db:"votes" json:"votes"`
+	ID          string `db:"id" json:"id"`
+	Name        string `db:"name" json:"name"`
+	CandidateID string `db:"candidate_id" json:"candidate_id"`
+	Votes       int64  `db:"votes" json:"votes"`
 }

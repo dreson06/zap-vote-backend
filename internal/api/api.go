@@ -69,6 +69,8 @@ func apiV1(group *echo.Group, conf *ConfigParams) {
 	group.POST("/candidate/add", candidateController.AddPOST, auth.AdminAuth)
 
 	//candidates routes
-	group.GET("/candidate/get", candidateController.GetFromDepartment, auth.Auth)
+	group.GET("/candidate/get", candidateController.CandidateDepartmentGET, auth.Auth)
+	group.GET("/faculty/candidate/:id", candidateController.FacultyCandidateGET, auth.Auth)
+	group.GET("/class/candidate/:id", candidateController.ClassRepCandidateGET, auth.Auth)
 
 }

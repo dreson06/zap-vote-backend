@@ -1,10 +1,17 @@
 package candidatestore
 
-import "zapvote/internal/model/candidate"
+import (
+	"zapvote/internal/model/candidate"
+	"zapvote/internal/model/classrep"
+	"zapvote/internal/model/faculty"
+)
 
 type Store interface {
 	Create(c *candidate.Candidate) error
 	GetSpecific(courseCode string) ([]candidate.Candidate, error)
 	GetGeneral() ([]candidate.Candidate, error)
 	GetCandidateByDepartment(department string) ([]candidate.Candidate, error)
+
+	GetFacultyCandidateByID(id string) (*faculty.Simple, error)
+	GetClassRepByID(id string) (*classrep.Simple, error)
 }

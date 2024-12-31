@@ -44,7 +44,7 @@ func (cc *CandidateController) AddPOST(e echo.Context) error {
 	return response.Success(e)
 }
 
-func (cc *CandidateController) GetFromDepartment(e echo.Context) error {
+func (cc *CandidateController) CandidateDepartmentGET(e echo.Context) error {
 	department := e.QueryParam("department")
 	if department == "" {
 		return response.BadRequestError(e, "department required")
@@ -56,22 +56,20 @@ func (cc *CandidateController) GetFromDepartment(e echo.Context) error {
 	return response.JSON(e, candidates)
 }
 
-//func (cc *CandidateController) SpecificGET(e echo.Context) error {
-//	course := e.QueryParam("course")
-//	if course == "" {
-//		return response.BadRequestError(e, "can not find course")
-//	}
-//	candidates, err := cc.candidateStore.GetSpecific(course)
-//	if err != nil {
-//		return response.ServerError(e, err, "")
-//	}
-//	return response.JSON(e, candidates)
-//}
-//
-//func (cc *CandidateController) GeneralGET(e echo.Context) error {
-//	candidates, err := cc.candidateStore.GetGeneral()
-//	if err != nil {
-//		return response.ServerError(e, err, "")
-//	}
-//	return response.JSON(e, candidates)
-//}
+func (cc *CandidateController) FacultyCandidateGET(e echo.Context) error {
+	id := e.Param("id")
+	c, err := cc.candidateStore.GetFacultyCandidateByID(id)
+	if err != nil {
+		return response.ServerError(e, err, "")
+	}
+	return response.JSON(e, c)
+}
+
+func (cc *CandidateController) ClassRepCandidateGET(e echo.Context) error {
+	id := e.Param("id")
+	c, err := cc.candidateStore.GetClassRepByID(id)
+	if err != nil {
+		return response.ServerError(e, err, "")
+	}
+	return response.JSON(e, c)
+}
