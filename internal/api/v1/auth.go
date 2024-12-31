@@ -83,6 +83,9 @@ func (ac *AuthController) AuthPOST(e echo.Context) error {
 
 	err = ac.userService.Create(usr)
 	if err != nil {
+		if errors.Is(err, userstore.ErrorUserExists) {
+			return response.OtherErrors(e, response.StatusUserRegistered, "device already registered")
+		}
 		return response.ServerError(e, err, "")
 	}
 	token, err := accesstoken.GenerateForUser(ID)

@@ -15,7 +15,8 @@ const (
 
 	StatusServerError Status = 500
 
-	StatusWrongPassword Status = 4001
+	StatusWrongPassword  Status = 4001
+	StatusUserRegistered Status = 4002
 )
 
 type Response struct {
