@@ -13,6 +13,7 @@ import (
 	"zapvote/internal/services/candidatestore"
 	"zapvote/internal/services/electionstore"
 	"zapvote/internal/services/userstore"
+	"zapvote/internal/services/votestore"
 )
 
 type ConfigParams struct {
@@ -53,6 +54,9 @@ func apiV1(group *echo.Group, conf *ConfigParams) {
 	electionService := electionstore.NewSQLStore(conf.DB)
 	electionController := v1.NewElectionController(electionService)
 
+	voteService := votestore.NewSQLStore(conf.DB)
+	voteController := v1.NewVoteController(voteService, userService, electionService, conf.DB)
+
 	group.GET("/election/presidential", electionController.PresidentialCandidatesGET, auth.Auth)
 	group.GET("/election/faculty/:faculty", electionController.FacultyCandidatesGET, auth.Auth)
 	group.GET("/election/class/:course", electionController.ClassRepCandidatesGET, auth.Auth)
@@ -72,5 +76,12 @@ func apiV1(group *echo.Group, conf *ConfigParams) {
 	group.GET("/candidate/get", candidateController.CandidateDepartmentGET, auth.Auth)
 	group.GET("/faculty/candidate/:id", candidateController.FacultyCandidateGET, auth.Auth)
 	group.GET("/class/candidate/:id", candidateController.ClassRepCandidateGET, auth.Auth)
+	group.GET("/candidate/one/:id", candidateController.PresidentialOneGET, auth.Auth)
+
+	//vote routes
+	group.POST("/vote/presidential", voteController.VotePresidentialPOST, auth.Auth)
+	group.POST("/vote/faculty", voteController.FacultyVotePOST, auth.Auth)
+	group.POST("/vote/class", voteController.VoteClassPOST, auth.Auth)
+	group.GET("/has/voted/:category", voteController.HasVotedGET, auth.Auth)
 
 }

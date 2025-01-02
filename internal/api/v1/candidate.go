@@ -73,3 +73,12 @@ func (cc *CandidateController) ClassRepCandidateGET(e echo.Context) error {
 	}
 	return response.JSON(e, c)
 }
+
+func (cc *CandidateController) PresidentialOneGET(e echo.Context) error {
+	id := e.Param("id")
+	c, err := cc.candidateStore.GetPresidentialOne(id)
+	if err != nil {
+		return response.ServerError(e, err, "")
+	}
+	return response.JSON(e, c)
+}

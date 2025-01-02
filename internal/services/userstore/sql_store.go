@@ -37,7 +37,7 @@ func (us *SqlStore) Create(u *user.User) error {
 
 func (us *SqlStore) GetUserSimple(id string) (*user.Simple, error) {
 	u := &user.Simple{}
-	err := us.db.Get(u, "SELECT id,password FROM _user WHERE id=$1", id)
+	err := us.db.Get(u, "SELECT id,password,device_id FROM _user WHERE id=$1", id)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, ErrorUserNotFound

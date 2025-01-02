@@ -12,8 +12,9 @@ type User struct {
 }
 
 type Simple struct {
-	ID       string `json:"id"`
-	Password string `json:"password"`
+	ID       string `db:"id" json:"id"`
+	Password string `db:"password" json:"-"`
+	DeviceID string `db:"device_id" json:"device_id,omitempty"`
 }
 
 type MeData struct {

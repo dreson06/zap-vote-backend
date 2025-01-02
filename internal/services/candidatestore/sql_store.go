@@ -6,8 +6,6 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"time"
 	"zapvote/internal/model/candidate"
-	"zapvote/internal/model/classrep"
-	"zapvote/internal/model/faculty"
 )
 
 type SQLStore struct {
@@ -55,33 +53,4 @@ func (cs *SQLStore) GetSpecific(courseCode string) ([]candidate.Candidate, error
 		return nil, err
 	}
 	return candidates, nil
-}
-
-func (cs *SQLStore) GetCandidateByDepartment(department string) ([]candidate.Candidate, error) {
-	candidates := make([]candidate.Candidate, 0)
-	err := cs.db.Select(&candidates, "SELECT * FROM _candidate WHERE department=$1", department)
-	if err != nil {
-		return nil, err
-	}
-	return candidates, nil
-}
-
-func (cs *SQLStore) GetFacultyCandidateByID(id string) (*faculty.Simple, error) {
-	res := &faculty.Simple{}
-	query := `SELECT f.id,f.name as faculty_name,f.slogan,f.votes,c.name,c.course_code,c.thumbnail FROM _faculty f JOIN _candidate c ON f.candidate_id = c.id WHERE f.candidate_id = $1;`
-	err := cs.db.Get(res, query, id)
-	if err != nil {
-		return nil, err
-	}
-	return res, nil
-}
-
-func (cs *SQLStore) GetClassRepByID(id string) (*classrep.Simple, error) {
-	res := &classrep.Simple{}
-	query := `SELECT cr.id,cr.slogan,cr.votes,c.name,c.thumbnail FROM _classrep cr JOIN _candidate c ON c.id = cr.candidate_id WHERE cr.candidate_id = $1;`
-	err := cs.db.Get(res, query, id)
-	if err != nil {
-		return nil, err
-	}
-	return res, nil
 }

@@ -4,10 +4,7 @@ import (
 	"errors"
 	"github.com/jmoiron/sqlx"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"zapvote/internal/model/classrep"
 	"zapvote/internal/model/election"
-	"zapvote/internal/model/faculty"
-	"zapvote/internal/model/presidential"
 )
 
 type SQLStore struct {
@@ -30,54 +27,4 @@ func (es SQLStore) Create(e *election.Election) error {
 		return err
 	}
 	return nil
-}
-
-func (es SQLStore) GetPresidentialCandidates() ([]presidential.Simple, error) {
-	candidates := make([]presidential.Simple, 0)
-	query := `SELECT p.id,p.slogan,p.votes,c.name as president_name,v.name as vice_name,c.department FROM _presidential p JOIN _election e ON e.id = p.election_id JOIN _candidate c ON c.id = p.president_id JOIN _candidate v ON v.id = p.vice_id ORDER BY p.votes DESC;`
-	err := es.db.Select(&candidates, query)
-	if err != nil {
-		return nil, err
-	}
-	return candidates, nil
-}
-
-func (es SQLStore) GetFacultyCandidates(name string) ([]faculty.Simple, error) {
-	candidates := make([]faculty.Simple, 0)
-	query := `SELECT f.id,f.slogan,f.votes,c.name,c.course_code,c.thumbnail FROM _faculty f JOIN _candidate c ON f.candidate_id = c.id WHERE f.name = $1`
-	err := es.db.Select(&candidates, query, name)
-	if err != nil {
-		return nil, err
-	}
-	return candidates, nil
-}
-
-func (es SQLStore) GetClassRepCandidates(courseCode string) ([]classrep.Simple, error) {
-	candidates := make([]classrep.Simple, 0)
-	query := `SELECT cr.id,c.name,cr.slogan,cr.votes,c.thumbnail FROM _classrep cr LEFT JOIN _candidate c ON cr.candidate_id = c.id WHERE cr.course_code=$1 ORDER BY cr.votes DESC`
-	err := es.db.Select(&candidates, query, courseCode)
-	if err != nil {
-		return nil, err
-	}
-	return candidates, nil
-}
-
-func (es SQLStore) GetFacultyResults() ([]faculty.Results, error) {
-	var candidates []faculty.Results
-	query := `SELECT f.id,f.candidate_id, f.name as faculty_name,f.votes,c.name as candidate_name FROM _faculty f JOIN _candidate c ON f.candidate_id = c.id ORDER BY f.votes DESC`
-	err := es.db.Select(&candidates, query)
-	if err != nil {
-		return nil, err
-	}
-	return candidates, nil
-}
-
-func (es SQLStore) GetClassRepResults(code string) ([]classrep.Results, error) {
-	var candidates []classrep.Results
-	query := `SELECT cr.id,cr.candidate_id,cr.votes,c.name FROM _classrep cr JOIN _candidate c ON c.id = cr.candidate_id WHERE cr.course_code=$1 ORDER BY cr.votes DESC`
-	err := es.db.Select(&candidates, query, code)
-	if err != nil {
-		return nil, err
-	}
-	return candidates, nil
 }
