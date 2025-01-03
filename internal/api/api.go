@@ -17,8 +17,13 @@ import (
 )
 
 type ConfigParams struct {
-	DB   *sqlx.DB
-	Mode config.Mode
+	DB             *sqlx.DB
+	Mode           config.Mode
+	UserStore      userstore.Store
+	AdminStore     adminstore.Store
+	CandidateStore candidatestore.Store
+	ElectionStore  electionstore.Store
+	VoteStore      votestore.Store
 }
 
 func Init(conf *ConfigParams) *echo.Echo {
@@ -40,23 +45,15 @@ func Init(conf *ConfigParams) *echo.Echo {
 }
 
 func apiV1(group *echo.Group, conf *ConfigParams) {
-	userService := userstore.NewSqlStore(conf.DB)
 
-	authController := v1.NewAuthController(userService)
-	userController := v1.NewUserController(userService)
+	authController := v1.NewAuthController(conf.UserStore)
+	userController := v1.NewUserController(conf.UserStore)
+	candidateController := v1.NewCandidateController(conf.CandidateStore)
+	electionController := v1.NewElectionController(conf.ElectionStore)
+	voteController := v1.NewVoteController(conf.VoteStore, conf.UserStore, conf.ElectionStore, conf.DB)
+	adminController := v1.NewAdminController(conf.AdminStore)
 
-	adminService := adminstore.NewSQLStore(conf.DB)
-	adminController := v1.NewAdminController(adminService)
-
-	candidateService := candidatestore.NewSQLStore(conf.DB)
-	candidateController := v1.NewCandidateController(candidateService)
-
-	electionService := electionstore.NewSQLStore(conf.DB)
-	electionController := v1.NewElectionController(electionService)
-
-	voteService := votestore.NewSQLStore(conf.DB)
-	voteController := v1.NewVoteController(voteService, userService, electionService, conf.DB)
-
+	group.GET("/election/:id", electionController.ElectionGET, auth.Auth)
 	group.GET("/election/presidential", electionController.PresidentialCandidatesGET, auth.Auth)
 	group.GET("/election/faculty/:faculty", electionController.FacultyCandidatesGET, auth.Auth)
 	group.GET("/election/class/:course", electionController.ClassRepCandidatesGET, auth.Auth)
@@ -73,6 +70,7 @@ func apiV1(group *echo.Group, conf *ConfigParams) {
 	group.POST("/candidate/add", candidateController.AddPOST, auth.AdminAuth)
 
 	//candidates routes
+
 	group.GET("/candidate/get", candidateController.CandidateDepartmentGET, auth.Auth)
 	group.GET("/faculty/candidate/:id", candidateController.FacultyCandidateGET, auth.Auth)
 	group.GET("/class/candidate/:id", candidateController.ClassRepCandidateGET, auth.Auth)

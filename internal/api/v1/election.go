@@ -2,7 +2,9 @@ package v1
 
 import (
 	"github.com/labstack/echo/v4"
+	"strconv"
 	"zapvote/internal/api/response"
+	"zapvote/internal/model/election"
 	"zapvote/internal/services/electionstore"
 )
 
@@ -14,6 +16,19 @@ func NewElectionController(electionStore electionstore.Store) *ElectionControlle
 	return &ElectionController{
 		electionStore: electionStore,
 	}
+}
+
+func (ec *ElectionController) ElectionGET(e echo.Context) error {
+	id := e.Param("id")
+	electionType, err := strconv.ParseInt(id, 10, 32)
+	if err != nil {
+		return response.ServerError(e, err, "")
+	}
+	el, err := ec.electionStore.GetElection(election.TypeElection(electionType))
+	if err != nil {
+		return response.ServerError(e, err, "")
+	}
+	return response.JSON(e, el)
 }
 
 func (ec *ElectionController) PresidentialCandidatesGET(e echo.Context) error {

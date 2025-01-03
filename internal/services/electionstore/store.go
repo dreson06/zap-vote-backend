@@ -10,6 +10,8 @@ import (
 
 type Store interface {
 	Create(e *election.Election) error
+	GetElection(et election.TypeElection) (*election.Election, error)
+
 	GetAllPresidentialCandidates() ([]presidential.Candidate, error)
 	GetFacultyCandidates(faculty string) ([]faculty.Simple, error)
 	GetClassRepCandidates(courseCode string) ([]classrep.Simple, error)

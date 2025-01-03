@@ -11,7 +11,7 @@ type SQLStore struct {
 	db *sqlx.DB
 }
 
-func NewSQLStore(db *sqlx.DB) *SQLStore {
+func NewSqlStore(db *sqlx.DB) *SQLStore {
 	return &SQLStore{db: db}
 }
 
@@ -22,9 +22,18 @@ func (es SQLStore) Create(e *election.Election) error {
 	if e.Title == "" || e.StartAt.IsZero() || e.EndAt.IsZero() {
 		return errors.New("information missing")
 	}
-	_, err := es.db.NamedExec("INSERT INTO _election(id,title,created_at,start_at,end_at) VALUES(:id,:title,:created_at,:start_at,:end_at)", e)
+	_, err := es.db.NamedExec("INSERT INTO _election(id,title,election_type,created_at,start_at,end_at) VALUES(:id,:title,:election_type,:created_at,:start_at,:end_at)", e)
 	if err != nil {
 		return err
 	}
 	return nil
+}
+
+func (es SQLStore) GetElection(et election.TypeElection) (*election.Election, error) {
+	var e election.Election
+	err := es.db.Get(&e, "SELECT * FROM _election WHERE election_type=$1", et)
+	if err != nil {
+		return nil, err
+	}
+	return &e, nil
 }

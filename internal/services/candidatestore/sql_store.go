@@ -12,7 +12,7 @@ type SQLStore struct {
 	db *sqlx.DB
 }
 
-func NewSQLStore(db *sqlx.DB) *SQLStore {
+func NewSqlStore(db *sqlx.DB) *SQLStore {
 	return &SQLStore{
 		db: db,
 	}
