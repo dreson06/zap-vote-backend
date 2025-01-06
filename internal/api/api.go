@@ -3,6 +3,7 @@ package api
 import (
 	"github.com/jmoiron/sqlx"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 	"net/http"
 	"zapvote/config"
 	"zapvote/internal/api/middleware/auth"
@@ -35,6 +36,13 @@ func Init(conf *ConfigParams) *echo.Echo {
 		return c.String(http.StatusOK, "pong")
 	})
 	e.Use(simplelog.Logger)
+
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins:     []string{"http://localhost:5173", "http://192.168.3.3:5173"},
+		AllowMethods:     []string{"*"},
+		AllowHeaders:     []string{"*"},
+		AllowCredentials: true,
+	}))
 
 	group := e.Group("/api")
 	group.Any("/ping", func(c echo.Context) error {
