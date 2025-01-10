@@ -26,7 +26,7 @@ func (ec *ElectionController) ElectionGET(e echo.Context) error {
 }
 
 func (ec *ElectionController) PresidentialCandidatesGET(e echo.Context) error {
-	candidates, err := ec.electionStore.GetAllPresidentialCandidates()
+	candidates, err := ec.electionStore.GetPresidentialCandidates()
 	if err != nil {
 		return response.ServerError(e, err, "")
 	}

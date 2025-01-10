@@ -14,6 +14,7 @@ type Faculty struct {
 type Simple struct {
 	ID          string `db:"id" json:"id"`
 	Name        string `db:"name" json:"name"`
+	ElectionID  string `db:"election_id" json:"election_id"`
 	Slogan      string `db:"slogan" json:"slogan,omitempty"`
 	Thumbnail   string `db:"thumbnail" json:"thumbnail"`
 	FacultyName string `db:"faculty_name" json:"faculty_name,omitempty"`

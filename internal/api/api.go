@@ -83,12 +83,12 @@ func apiV1(group *echo.Group, conf *ConfigParams) {
 	group.GET("/candidate/get", candidateController.CandidateDepartmentGET, auth.Auth)
 	group.GET("/faculty/candidate/:id", candidateController.FacultyCandidateGET, auth.Auth)
 	group.GET("/class/candidate/:id", candidateController.ClassRepCandidateGET, auth.Auth)
-	group.GET("/candidate/one/:id", candidateController.PresidentialOneGET, auth.Auth)
+	group.GET("/presidential/candidate/:id", candidateController.PresidentialOneGET, auth.Auth)
 
 	//vote routes
 	group.POST("/vote/presidential", voteController.VotePresidentialPOST, auth.Auth)
 	group.POST("/vote/faculty", voteController.FacultyVotePOST, auth.Auth)
 	group.POST("/vote/class", voteController.VoteClassPOST, auth.Auth)
-	group.GET("/has/voted/:category", voteController.HasVotedGET, auth.Auth)
+	group.GET("/has/voted/:election-id", voteController.HasVotedGET, auth.Auth)
 
 }

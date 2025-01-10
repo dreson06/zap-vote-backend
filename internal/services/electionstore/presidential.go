@@ -5,9 +5,9 @@ import (
 	"zapvote/internal/model/presidential"
 )
 
-func (es SQLStore) GetAllPresidentialCandidates() ([]presidential.Candidate, error) {
-	candidates := make([]presidential.Candidate, 0)
-	query := `SELECT p.id,p.election_id,p.slogan,p.votes,c.name as president_name,v.name as vice_name,c.department FROM _presidential p JOIN _election e ON e.id = p.election_id JOIN _candidate c ON c.id = p.president_id JOIN _candidate v ON v.id = p.vice_id ORDER BY p.votes DESC;`
+func (es SQLStore) GetPresidentialCandidates() ([]presidential.Simple, error) {
+	candidates := make([]presidential.Simple, 0)
+	query := `SELECT p.id,p.election_id,c.department,c.name as president_name,v.name as vice_name,p.slogan,p.votes FROM _presidential p JOIN _candidate c ON c.id = p.president_id JOIN _candidate v on v.id = p.vice_id ORDER BY p.votes DESC`
 	err := es.db.Select(&candidates, query)
 	if err != nil {
 		return nil, err

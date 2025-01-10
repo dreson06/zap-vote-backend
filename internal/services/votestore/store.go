@@ -10,5 +10,5 @@ var ErrorInformationMissing = errors.New("information missing")
 
 type Store interface {
 	CreateTx(tx *sqlx.Tx, v *vote.Vote) error
-	HasVoted(userID string, voteType vote.Category) (bool, error)
+	HasVoted(userID, electionID string) (bool, error)
 }

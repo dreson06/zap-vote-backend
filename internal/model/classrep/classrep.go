@@ -11,11 +11,12 @@ type ClassRep struct {
 }
 
 type Simple struct {
-	ID        string `db:"id" json:"id"`
-	Name      string `db:"name" json:"name"`
-	Slogan    string `db:"slogan" json:"slogan"`
-	Thumbnail string `db:"thumbnail" json:"thumbnail"`
-	Votes     int64  `db:"votes" json:"votes"`
+	ID         string `db:"id" json:"id"`
+	Name       string `db:"name" json:"name"`
+	ElectionID string `db:"election_id" json:"election_id"`
+	Slogan     string `db:"slogan" json:"slogan"`
+	Thumbnail  string `db:"thumbnail" json:"thumbnail"`
+	Votes      int64  `db:"votes" json:"votes"`
 }
 
 type Results struct {

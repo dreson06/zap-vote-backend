@@ -3,7 +3,6 @@ package v1
 import (
 	"github.com/jmoiron/sqlx"
 	"github.com/labstack/echo/v4"
-	"strconv"
 	"zapvote/internal/api/middleware/auth"
 	"zapvote/internal/api/response"
 	"zapvote/internal/model/vote"
@@ -20,9 +19,9 @@ type VoteController struct {
 }
 
 type requestBody struct {
+	ID         string `json:"id"`
 	ElectionID string `json:"election_id"`
 	DeviceID   string `json:"device_id"`
-	Faculty    int    `json:"faculty,omitempty"`
 }
 
 func NewVoteController(voteStore votestore.Store, userStore userstore.Store, electionStore electionstore.Store, db *sqlx.DB) *VoteController {
@@ -37,16 +36,12 @@ func NewVoteController(voteStore votestore.Store, userStore userstore.Store, ele
 type VoteType struct {
 	getVotes    func(*sqlx.Tx, string) (int64, error)
 	updateVotes func(*sqlx.Tx, string, int64) error
-	voteType    vote.Category
-	body        *requestBody
 }
 
 func (vc *VoteController) HasVotedGET(e echo.Context) error {
 	userID := auth.GetID(e)
-	category := e.Param("category")
-	c, _ := strconv.ParseInt(category, 10, 32)
-
-	hasVoted, err := vc.voteStore.HasVoted(userID, vote.Category(c))
+	electionID := e.Param("election-id")
+	hasVoted, err := vc.voteStore.HasVoted(userID, electionID)
 	if err != nil {
 		return response.ServerError(e, err, "")
 	}
@@ -56,8 +51,11 @@ func (vc *VoteController) HasVotedGET(e echo.Context) error {
 
 func (vc *VoteController) process(e echo.Context, voteType VoteType) error {
 	userID := auth.GetID(e)
-
-	if voteType.body.ElectionID == "" || voteType.body.DeviceID == "" {
+	body := &requestBody{}
+	if err := e.Bind(body); err != nil {
+		return response.BadRequestError(e, "")
+	}
+	if body.ID == "" || body.DeviceID == "" {
 		return response.BadRequestError(e, "information missing")
 	}
 
@@ -67,11 +65,11 @@ func (vc *VoteController) process(e echo.Context, voteType VoteType) error {
 	}
 
 	//check if the device id is the same
-	if u.DeviceID != voteType.body.DeviceID {
+	if u.DeviceID != body.DeviceID {
 		return response.OtherErrors(e, response.StatusUnauthorizedVote, "vote from device you registered")
 	}
 
-	hasVoted, err := vc.voteStore.HasVoted(userID, voteType.voteType)
+	hasVoted, err := vc.voteStore.HasVoted(userID, body.ElectionID)
 	if err != nil {
 		return response.ServerError(e, err, "")
 	}
@@ -85,21 +83,21 @@ func (vc *VoteController) process(e echo.Context, voteType VoteType) error {
 		return response.ServerError(e, err, "")
 	}
 
-	votes, err := voteType.getVotes(tx, voteType.body.ElectionID)
+	votes, err := voteType.getVotes(tx, body.ID)
 	if err != nil {
 		_ = tx.Rollback()
 		return response.ServerError(e, err, "")
 	}
 	newVote := votes + 1
-	err = voteType.updateVotes(tx, voteType.body.ElectionID, newVote)
+	err = voteType.updateVotes(tx, body.ID, newVote)
 	if err != nil {
 		_ = tx.Rollback()
 		return response.ServerError(e, err, "")
 	}
 
 	v := &vote.Vote{
-		UserID:   userID,
-		VoteType: voteType.voteType,
+		UserID:     userID,
+		ElectionID: body.ElectionID,
 	}
 
 	err = vc.voteStore.CreateTx(tx, v)

@@ -17,7 +17,7 @@ func (es SQLStore) GetClassRepResults(code string) ([]classrep.Results, error) {
 
 func (es SQLStore) GetClassRepCandidates(courseCode string) ([]classrep.Simple, error) {
 	candidates := make([]classrep.Simple, 0)
-	query := `SELECT cr.id,c.name,cr.slogan,cr.votes,c.thumbnail FROM _classrep cr LEFT JOIN _candidate c ON cr.candidate_id = c.id WHERE cr.course_code=$1 ORDER BY cr.votes DESC`
+	query := `SELECT cr.id,cr.election_id,c.name,cr.slogan,cr.votes,c.thumbnail FROM _classrep cr LEFT JOIN _candidate c ON cr.candidate_id = c.id WHERE cr.course_code=$1 ORDER BY cr.votes DESC`
 	err := es.db.Select(&candidates, query, courseCode)
 	if err != nil {
 		return nil, err

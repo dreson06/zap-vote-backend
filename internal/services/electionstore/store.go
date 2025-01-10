@@ -12,7 +12,7 @@ type Store interface {
 	Create(e *election.Election) error
 	GetElection(id string) (*election.Election, error)
 
-	GetAllPresidentialCandidates() ([]presidential.Candidate, error)
+	GetPresidentialCandidates() ([]presidential.Simple, error)
 	GetFacultyCandidates(faculty string) ([]faculty.Simple, error)
 	GetClassRepCandidates(courseCode string) ([]classrep.Simple, error)
 

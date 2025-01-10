@@ -17,7 +17,7 @@ func (es SQLStore) GetFacultyResults() ([]faculty.Results, error) {
 
 func (es SQLStore) GetFacultyCandidates(name string) ([]faculty.Simple, error) {
 	candidates := make([]faculty.Simple, 0)
-	query := `SELECT f.id,f.slogan,f.votes,c.name,c.course_code,c.thumbnail FROM _faculty f JOIN _candidate c ON f.candidate_id = c.id WHERE f.name = $1`
+	query := `SELECT f.id,f.election_id,f.slogan,f.votes,c.name,c.course_code,c.thumbnail FROM _faculty f JOIN _candidate c ON f.candidate_id = c.id WHERE f.name = $1`
 	err := es.db.Select(&candidates, query, name)
 	if err != nil {
 		return nil, err

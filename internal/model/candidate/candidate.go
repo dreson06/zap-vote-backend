@@ -21,6 +21,7 @@ const (
 type Candidate struct {
 	ID         string    `db:"id" json:"id,omitempty"`
 	Name       string    `db:"name" json:"name"`
+	ElectionID string    `db:"election_id" json:"election_id"`
 	CourseCode string    `db:"course_code" json:"course_code"`
 	Position   Position  `db:"position" json:"position"`
 	Type       Type      `db:"type" json:"type"`
