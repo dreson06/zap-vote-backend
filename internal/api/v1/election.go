@@ -2,9 +2,7 @@ package v1
 
 import (
 	"github.com/labstack/echo/v4"
-	"strconv"
 	"zapvote/internal/api/response"
-	"zapvote/internal/model/election"
 	"zapvote/internal/services/electionstore"
 )
 
@@ -20,11 +18,7 @@ func NewElectionController(electionStore electionstore.Store) *ElectionControlle
 
 func (ec *ElectionController) ElectionGET(e echo.Context) error {
 	id := e.Param("id")
-	electionType, err := strconv.ParseInt(id, 10, 32)
-	if err != nil {
-		return response.ServerError(e, err, "")
-	}
-	el, err := ec.electionStore.GetElection(election.TypeElection(electionType))
+	el, err := ec.electionStore.GetElection(id)
 	if err != nil {
 		return response.ServerError(e, err, "")
 	}
@@ -78,4 +72,14 @@ func (ec *ElectionController) ClassRepResultsGET(e echo.Context) error {
 		return response.ServerError(e, err, "")
 	}
 	return response.JSON(e, candidates)
+}
+
+func (ec *ElectionController) TotalVotesGET(e echo.Context) error {
+	id := e.Param("id")
+	votes, err := ec.electionStore.GetTotalVotes(id)
+	if err != nil {
+		return response.ServerError(e, err, "")
+	}
+	v := map[string]int64{"total_votes": votes}
+	return response.JSON(e, v)
 }

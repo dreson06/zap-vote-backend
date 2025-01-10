@@ -36,4 +36,5 @@ func main() {
 
 	log.Info().Msg("starting server on port " + config.Cfg.Port)
 	log.Fatal().Err(server.Start(":" + config.Cfg.Port)).Send()
+
 }

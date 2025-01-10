@@ -10,7 +10,7 @@ import (
 
 type Store interface {
 	Create(e *election.Election) error
-	GetElection(et election.TypeElection) (*election.Election, error)
+	GetElection(id string) (*election.Election, error)
 
 	GetAllPresidentialCandidates() ([]presidential.Candidate, error)
 	GetFacultyCandidates(faculty string) ([]faculty.Simple, error)
@@ -26,4 +26,6 @@ type Store interface {
 	GetClassVotes(tx *sqlx.Tx, id string) (int64, error)
 	GetPresidentVotesTx(tx *sqlx.Tx, id string) (int64, error)
 	GetFacultyVotesTx(tx *sqlx.Tx, id string) (int64, error)
+
+	GetTotalVotes(id string) (int64, error)
 }

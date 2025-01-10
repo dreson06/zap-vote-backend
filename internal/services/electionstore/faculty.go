@@ -7,7 +7,7 @@ import (
 
 func (es SQLStore) GetFacultyResults() ([]faculty.Results, error) {
 	var candidates []faculty.Results
-	query := `SELECT f.id,f.candidate_id, f.name as faculty_name,f.votes,c.name as candidate_name FROM _faculty f JOIN _candidate c ON f.candidate_id = c.id ORDER BY f.votes DESC`
+	query := `SELECT f.id,e.id as election_id,f.candidate_id, f.name as faculty_name,f.votes,c.name as candidate_name FROM _faculty f JOIN _candidate c ON f.candidate_id = c.id JOIN _election e ON e.id = f.election_id ORDER BY f.votes DESC`
 	err := es.db.Select(&candidates, query)
 	if err != nil {
 		return nil, err

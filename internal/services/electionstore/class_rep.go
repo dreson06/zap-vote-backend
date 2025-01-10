@@ -7,7 +7,7 @@ import (
 
 func (es SQLStore) GetClassRepResults(code string) ([]classrep.Results, error) {
 	var candidates []classrep.Results
-	query := `SELECT cr.id,cr.candidate_id,cr.votes,c.name FROM _classrep cr JOIN _candidate c ON c.id = cr.candidate_id WHERE cr.course_code=$1 ORDER BY cr.votes DESC`
+	query := `SELECT cr.id,e.id as election_id,cr.candidate_id,cr.votes,c.name FROM _classrep cr JOIN _candidate c ON c.id = cr.candidate_id JOIN _election e ON e.id = cr.election_id WHERE cr.course_code=$1 ORDER BY cr.votes DESC`
 	err := es.db.Select(&candidates, query, code)
 	if err != nil {
 		return nil, err

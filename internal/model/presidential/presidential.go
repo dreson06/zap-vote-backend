@@ -16,6 +16,7 @@ type Candidate struct {
 	ID                 string `db:"id" json:"id"`
 	PresidentName      string `db:"president_name" json:"president_name"`
 	ViceName           string `db:"vice_name" json:"vice_name"`
+	ElectionID         string `db:"election_id" json:"election_id"`
 	Slogan             string `db:"slogan" json:"slogan"`
 	Department         string `db:"department" json:"department"`
 	PresidentThumbnail string `db:"president_thumbnail" json:"president_thumbnail,omitempty"`

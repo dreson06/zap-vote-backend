@@ -65,6 +65,7 @@ func apiV1(group *echo.Group, conf *ConfigParams) {
 	group.GET("/election/presidential", electionController.PresidentialCandidatesGET, auth.Auth)
 	group.GET("/election/faculty/:faculty", electionController.FacultyCandidatesGET, auth.Auth)
 	group.GET("/election/class/:course", electionController.ClassRepCandidatesGET, auth.Auth)
+	group.GET("/election/votes/:id", electionController.TotalVotesGET, auth.Auth)
 
 	group.GET("/results/faculty", electionController.FacultyResultsGET, auth.Auth)
 	group.GET("/results/class/:code", electionController.ClassRepResultsGET, auth.Auth)

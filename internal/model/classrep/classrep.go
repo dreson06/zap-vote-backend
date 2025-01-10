@@ -21,6 +21,7 @@ type Simple struct {
 type Results struct {
 	ID          string `db:"id" json:"id"`
 	Name        string `db:"name" json:"name"`
+	ElectionID  string `db:"election_id" json:"election_id"`
 	CandidateID string `db:"candidate_id" json:"candidate_id"`
 	Votes       int64  `db:"votes" json:"votes"`
 }

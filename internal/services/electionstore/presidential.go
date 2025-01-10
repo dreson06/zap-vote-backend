@@ -7,7 +7,7 @@ import (
 
 func (es SQLStore) GetAllPresidentialCandidates() ([]presidential.Candidate, error) {
 	candidates := make([]presidential.Candidate, 0)
-	query := `SELECT p.id,p.slogan,p.votes,c.name as president_name,v.name as vice_name,c.department FROM _presidential p JOIN _election e ON e.id = p.election_id JOIN _candidate c ON c.id = p.president_id JOIN _candidate v ON v.id = p.vice_id ORDER BY p.votes DESC;`
+	query := `SELECT p.id,p.election_id,p.slogan,p.votes,c.name as president_name,v.name as vice_name,c.department FROM _presidential p JOIN _election e ON e.id = p.election_id JOIN _candidate c ON c.id = p.president_id JOIN _candidate v ON v.id = p.vice_id ORDER BY p.votes DESC;`
 	err := es.db.Select(&candidates, query)
 	if err != nil {
 		return nil, err
